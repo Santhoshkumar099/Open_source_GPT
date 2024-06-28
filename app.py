@@ -23,19 +23,6 @@ if get_username():
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2, 0.1)
     max_words = st.sidebar.number_input("Max Words", 1, 1000, 200)
 
-    # Suggestions
-    st.header("Prompt Suggestions")
-    suggestions = [
-        "GUVI was founded by",
-        "GUVI is a",
-        "Tell me about GUVI"
-    ]
-    selected_suggestion = st.selectbox("Try a suggestion:", suggestions)
-    if st.button("Use Suggestion"):
-        user_prompt = selected_suggestion
-    else:
-        user_prompt = ""
-
     # Input for user prompt
     user_prompt = st.text_area("Enter your prompt:", value=user_prompt, height=100)
 
