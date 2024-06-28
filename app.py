@@ -43,22 +43,22 @@ if user_auth():
     # Input for user prompt
     user_prompt = st.text_area("Enter your prompt:", height=100)
 
-    # Suggestions
-    st.sidebar.header("Prompt Suggestions")
-    suggestions = [
-        "GUVI was founded by",
-        "GUVI is a",
-        "Tell me about GUVI"
-    ]
-    selected_suggestion = st.sidebar.selectbox("Try a suggestion:", suggestions)
-    if st.sidebar.button("Use Suggestion"):
-        user_prompt = selected_suggestion
 
     # Disclaimer
     st.sidebar.markdown("---")
     st.sidebar.warning("Disclaimer: This AI model may produce inaccurate information. Use the generated content responsibly and verify important information.")
 
     if st.button("Generate Response"):
+        # Suggestions
+        st.sidebar.header("Prompt Suggestions")
+        suggestions = [
+            "GUVI was founded by",
+            "GUVI is a",
+            "Tell me about GUVI"
+        ]
+        selected_suggestion = st.sidebar.selectbox("Try a suggestion:", suggestions)
+    if st.sidebar.button("Use Suggestion"):
+        user_prompt = selected_suggestion
         if user_prompt:
             client = OpenAI(
                 base_url="https://integrate.api.nvidia.com/v1",
@@ -84,16 +84,6 @@ if user_auth():
 
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
-
-    # Requirements to run the app
-    st.sidebar.markdown("---")
-    st.sidebar.header("Requirements")
-    st.sidebar.markdown("""
-    To run this app, you need:
-    - Python 3.7+
-    - Streamlit
-    - OpenAI Python library
-    - Valid NVIDIA API key
-    """)
+   
 else:
     st.info("Please create and verify your username to access the app.")
