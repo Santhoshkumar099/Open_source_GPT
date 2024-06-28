@@ -5,34 +5,17 @@ from openai import OpenAI
 # Streamlit app setup
 st.set_page_config(page_title="AI Chat App", page_icon="🤖")
 
-# User registration and verification
-def user_auth():
+# User registration
+def get_username():
     if "username" not in st.session_state:
-        st.session_state.username = None
-        st.session_state.verified = False
-
-    if not st.session_state.username:
-        username = st.text_input("Create a username:")
+        username = st.text_input("Enter your username:")
         if username:
             st.session_state.username = username
-            st.success(f"Username '{username}' created successfully!")
-            st.info("Please verify your username on the next step.")
-            st.experimental_rerun()
-    
-    elif not st.session_state.verified:
-        verify_username = st.text_input("Verify your username:")
-        if st.button("Verify"):
-            if verify_username == st.session_state.username:
-                st.session_state.verified = True
-                st.success("Username verified successfully!")
-                st.experimental_rerun()
-            else:
-                st.error("Username verification failed. Please try again.")
-    
-    return st.session_state.verified
+            return True
+    return "username" in st.session_state
 
 # Main app
-if user_auth():
+if get_username():
     st.title(f"Welcome to AI Chat App, {st.session_state.username}!")
 
     # Sidebar for adjustments
@@ -40,25 +23,27 @@ if user_auth():
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2, 0.1)
     max_words = st.sidebar.number_input("Max Words", 1, 1000, 200)
 
-    # Input for user prompt
-    user_prompt = st.text_area("Enter your prompt:", height=100)
+    # Suggestions
+    st.header("Prompt Suggestions")
+    suggestions = [
+        "GUVI was founded by",
+        "GUVI is a",
+        "Tell me about GUVI"
+    ]
+    selected_suggestion = st.selectbox("Try a suggestion:", suggestions)
+    if st.button("Use Suggestion"):
+        user_prompt = selected_suggestion
+    else:
+        user_prompt = ""
 
+    # Input for user prompt
+    user_prompt = st.text_area("Enter your prompt:", value=user_prompt, height=100)
 
     # Disclaimer
-    st.sidebar.markdown("---")
-    st.sidebar.warning("Disclaimer: This AI model may produce inaccurate information. Use the generated content responsibly and verify important information.")
+    st.markdown("---")
+    st.warning("Disclaimer: This AI model may produce inaccurate information. Use the generated content responsibly and verify important information.")
 
     if st.button("Generate Response"):
-        # Suggestions
-        st.sidebar.header("Prompt Suggestions")
-        suggestions = [
-            "GUVI was founded by",
-            "GUVI is a",
-            "Tell me about GUVI"
-        ]
-        selected_suggestion = st.sidebar.selectbox("Try a suggestion:", suggestions)
-    if st.sidebar.button("Use Suggestion"):
-        user_prompt = selected_suggestion
         if user_prompt:
             client = OpenAI(
                 base_url="https://integrate.api.nvidia.com/v1",
@@ -84,6 +69,7 @@ if user_auth():
 
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
-   
+
+ 
 else:
-    st.info("Please create and verify your username to access the app.")
+    st.info("Please enter a username to access the app.")
