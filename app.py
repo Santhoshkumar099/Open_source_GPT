@@ -24,7 +24,7 @@ if get_username():
     max_words = st.sidebar.number_input("Max Words", 1, 1000, 200)
 
     # Input for user prompt
-    user_prompt = st.text_area("Enter your prompt:", value=user_prompt, height=100)
+    user_prompt = st.text_area("Enter your prompt:", height=100)
 
     # Disclaimer
     st.markdown("---")
@@ -57,6 +57,15 @@ if get_username():
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
 
- 
+    # Requirements to run the app
+    st.sidebar.markdown("---")
+    st.sidebar.header("Requirements")
+    st.sidebar.markdown("""
+    To run this app, you need:
+    - Python 3.7+
+    - Streamlit
+    - OpenAI Python library
+    - Valid NVIDIA API key
+    """)
 else:
     st.info("Please enter a username to access the app.")
