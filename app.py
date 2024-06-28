@@ -3,34 +3,37 @@ import openai
 from openai import OpenAI
 
 # Streamlit app setup
-st.set_page_config(page_title="NVIDIA AI Chat App", page_icon="🤖")
+st.set_page_config(page_title="AI Chat App", page_icon="🤖")
 
-# Login function
-def check_password():
-    def password_entered():
-        if st.session_state["password"] == "your_password":
-            st.session_state["password_correct"] = True
-            del st.session_state["password"]
-        else:
-            st.session_state["password_correct"] = False
+# User registration and verification
+def user_auth():
+    if "username" not in st.session_state:
+        st.session_state.username = None
+        st.session_state.verified = False
 
-    if "password_correct" not in st.session_state:
-        st.text_input(
-            "Enter password", type="password", on_change=password_entered, key="password"
-        )
-        return False
-    elif not st.session_state["password_correct"]:
-        st.text_input(
-            "Enter password", type="password", on_change=password_entered, key="password"
-        )
-        st.error("😕 Password incorrect")
-        return False
-    else:
-        return True
+    if not st.session_state.username:
+        username = st.text_input("Create a username:")
+        if username:
+            st.session_state.username = username
+            st.success(f"Username '{username}' created successfully!")
+            st.info("Please verify your username on the next step.")
+            st.experimental_rerun()
+    
+    elif not st.session_state.verified:
+        verify_username = st.text_input("Verify your username:")
+        if st.button("Verify"):
+            if verify_username == st.session_state.username:
+                st.session_state.verified = True
+                st.success("Username verified successfully!")
+                st.experimental_rerun()
+            else:
+                st.error("Username verification failed. Please try again.")
+    
+    return st.session_state.verified
 
 # Main app
-if check_password():
-    st.title("AI Chat App")
+if user_auth():
+    st.title(f"Welcome to AI Chat App, {st.session_state.username}!")
 
     # Sidebar for adjustments
     st.sidebar.header("Adjust Parameters")
@@ -92,6 +95,5 @@ if check_password():
     - OpenAI Python library
     - Valid NVIDIA API key
     """)
-
 else:
-    st.warning("Please enter the correct password to access the app.")
+    st.info("Please create and verify your username to access the app.")
