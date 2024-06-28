@@ -56,16 +56,5 @@ if get_username():
 
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
-
-    # Requirements to run the app
-    st.sidebar.markdown("---")
-    st.sidebar.header("Requirements")
-    st.sidebar.markdown("""
-    To run this app, you need:
-    - Python 3.7+
-    - Streamlit
-    - OpenAI Python library
-    - Valid NVIDIA API key
-    """)
 else:
     st.info("Please enter a username to access the app.")
